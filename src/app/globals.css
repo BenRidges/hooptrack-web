@@ -1,17 +1,10 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", Inter, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Brand tokens — keep in sync with tailwind.config.ts */
+  /* Brand tokens — sourced from iOS Color+Brand.swift and Auth screen palette */
   --color-brand-orange: #FF6B35;
   --color-brand-orange-accessible: #FF804F;
   --color-brand-orange-dark: #E55A25;
@@ -21,15 +14,8 @@
   --color-court-floor: #D7AD6B;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg-deep);
+  color: #ffffff;
+  font-family: var(--font-sans);
 }
