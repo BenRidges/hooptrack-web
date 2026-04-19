@@ -34,7 +34,7 @@ export function FGPercentChart({ data }: { data: DataPoint[] }) {
           width={40}
         />
         <Tooltip
-          formatter={(value: number) => [`${value.toFixed(1)}%`, 'FG%']}
+          formatter={(value) => [`${Number(value).toFixed(1)}%`, 'FG%']}
           contentStyle={{
             background: '#1A1426',
             border: '1px solid rgba(255,255,255,0.08)',

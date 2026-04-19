@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ShotChart } from '@/components/ShotChart'
 import { ZoneTable } from '@/components/ZoneTable'
-import { classifyZone, computeFGPct } from '@/lib/court'
+import { classifyZone } from '@/lib/court'
 import type { ZoneStats, CourtZone } from '@/types/hooptrack'
 
 interface Props {
@@ -21,13 +21,17 @@ export default async function SessionDetailPage({ params }: Props) {
 
   const [{ data: sessionData }, { data: shotsData }] = await Promise.all([
     supabase.from('training_sessions').select('*').eq('id', id).single(),
-    supabase.from('shot_records').select('*').eq('session_id', id),
+    supabase.from('shot_records').select('id, court_x, court_y, result, zone, created_at').eq('session_id', id),
   ])
 
   if (!sessionData) notFound()
 
   const session = sessionData
-  const shots = shotsData ?? []
+  // DB uses 'result' column; normalise to 'outcome' for our components
+  const shots = (shotsData ?? []).map((s) => ({
+    ...s,
+    outcome: s.result === 'make' ? 'make' : 'miss',
+  }))
 
   // Build zone stats
   const zoneMap = new Map<CourtZone, { attempts: number; makes: number }>()
@@ -47,9 +51,8 @@ export default async function SessionDetailPage({ params }: Props) {
     fg_pct: attempts > 0 ? (makes / attempts) * 100 : 0,
   }))
 
-  // computeFGPct expects ShotRecord[] but we only need outcome — cast is safe
-  const overallFg = computeFGPct(shots as Parameters<typeof computeFGPct>[0])
   const makes = shots.filter((s) => s.outcome === 'make').length
+  const overallFg = shots.length > 0 ? (makes / shots.length) * 100 : 0
 
   const sessionDate = new Date(session.started_at ?? '').toLocaleDateString('en-US', {
     weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
