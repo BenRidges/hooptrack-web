@@ -12,7 +12,7 @@ const DRILL_LABEL: Record<string, string> = {
 export default async function DashboardPage() {
   const supabase = await createClient()
 
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const sevenDaysAgo = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
   const [{ data: recentData }, { data: latestData }] = await Promise.all([
     supabase

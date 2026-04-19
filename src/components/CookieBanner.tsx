@@ -1,15 +1,14 @@
 'use client'
 import posthog from 'posthog-js'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const CONSENT_KEY = 'hooptrack_analytics_consent'
 
 export function CookieBanner() {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    if (!localStorage.getItem(CONSENT_KEY)) setVisible(true)
-  }, [])
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return !localStorage.getItem(CONSENT_KEY)
+  })
 
   function accept() {
     localStorage.setItem(CONSENT_KEY, 'accepted')
